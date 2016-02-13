@@ -15,6 +15,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::post('completed/update', 'ScoreboardController@completedUpdate');
+
 /*
 |--------------------------------------------------------------------------
 | Application Routes
