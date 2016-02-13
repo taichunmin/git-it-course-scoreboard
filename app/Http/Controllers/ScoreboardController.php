@@ -17,7 +17,7 @@ class ScoreboardController extends Controller
 
         if(!empty($mid))
             Redis::pipeline(function ($pipe) use ($mid, $name, $completed) {
-                $pipe->hset('mid:'.$mid, [
+                $pipe->hmset('mid:'.$mid, [
                     'mid' => $mid,
                     'name' => $name,
                     'completed' => json_encode($completed),
