@@ -38,11 +38,11 @@ class ScoreboardController extends Controller
     public function completedUpdate(Request $request)
     {
         $mid = $request->input('mid', ''); // machine id
-        $completed = $request->input('completed', '[]'); // user completed
-        $completed = json_decode($completed, true) ?: [];
 
         if(!empty($mid))
-            Redis::pipeline(function ($pipe) use ($mid, $name, $completed) {
+            Redis::pipeline(function ($pipe) use ($mid, $request) {
+                $completed = $request->input('completed', '[]'); // user completed
+                $completed = json_decode($completed, true) ?: [];
                 $pipe->hmset('user:'.$mid, [
                     'mid' => $mid,
                     'name' => $request->input('name', $mid), // name
