@@ -8,23 +8,47 @@ use Redis;
 
 class ScoreboardController extends Controller
 {
+    public function show()
+    {
+        $user_mids = Redis::smembers('user_mids');
+        $problems = [
+            "GET GIT",
+            "REPOSITORY",
+            "COMMIT TO IT",
+            "GITHUBBIN",
+            "REMOTE CONTROL",
+            "FORKS AND CLONES",
+            "BRANCHES AREN'T JUST FOR BIRDS",
+            "IT'S A SMALL WORLD",
+            "PULL, NEVER OUT OF DATE",
+            "REQUESTING YOU PULL, PLEASE",
+            "MERGE TADA!",
+        ];
+
+        $users = [];
+        foreach($user_mids as $mid)
+            $users[] = Redis::hgetall('user:'.$mid);
+
+        return view('scoreboard', compact('users', 'problems'));
+    }
+
     public function completedUpdate(Request $request)
     {
         $mid = $request->input('mid', ''); // machine id
-        $name = $request->input('name', $mid); // user name
         $completed = $request->input('completed', '[]'); // user completed
         $completed = json_decode($completed, true) ?: [];
 
         if(!empty($mid))
             Redis::pipeline(function ($pipe) use ($mid, $name, $completed) {
-                $pipe->hmset('mid:'.$mid, [
+                $pipe->hmset('user:'.$mid, [
                     'mid' => $mid,
-                    'name' => $name,
+                    'name' => $request->input('name', $mid), // name
+                    'github' => $request->input('github', ''), // github username
                     'completed' => json_encode($completed),
                 ]);
-                $pipe->sadd('mid_set', $mid);
+                $pipe->sadd('user_mids', $mid);
             });
 
-        return json_encode(compact('mid', 'name', 'completed'));
+        return json_encode(['result' => 'ok']);
     }
 }
