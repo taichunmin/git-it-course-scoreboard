@@ -39,7 +39,11 @@
 @forelse( $users as $user )
 					<tr>
 						<td title="{{ $user['mid'] }}">{{ $user['name'] }}</td>
-						<td>{{ $user['github'] }}</td>
+	@if (!empty( $user['github'] ))
+						<td><a target="_blank" href="https://github.com/{{ $user['github'] }}">{{ $user['github'] }}</a></td>
+	@else
+						<td>&nbsp;</td>
+	@endif
 						<td>{{ count($user['completed']) }}</td>
 	@for ($i = 1; $i <= 11; $i++)
 		@if (in_array($problems[$i-1], $user['completed']))
