@@ -31,7 +31,7 @@
 						<th class="text-center">github</th>
 						<th class="text-center">completed</th>
 @for ($i = 1; $i <= 11; $i++)
-						<th class="text-center" title="{{ $problems[$i-1] }}">{{ $i }}</th>
+						<th class="text-center" style="width:1%" title="{{ $problems[$i-1] }}">{{ $i }}</th>
 @endfor
 					</tr>
 				</thead>
