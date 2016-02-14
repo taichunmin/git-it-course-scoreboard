@@ -38,7 +38,7 @@
 				<tbody>
 @forelse( $users as $user )
 					<tr>
-						<td>{{ $user['name'] }}</td>
+						<td title="{{ $user['mid'] }}">{{ $user['name'] }}</td>
 						<td>{{ $user['github'] }}</td>
 						<td>{{ count($user['completed']) }}</td>
 	@for ($i = 1; $i <= 11; $i++)
