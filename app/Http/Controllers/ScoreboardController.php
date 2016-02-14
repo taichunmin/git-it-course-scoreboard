@@ -29,8 +29,15 @@ class ScoreboardController extends Controller
         foreach($user_mids as $mid) {
             $user = Redis::hgetall('user:'.$mid);
             $user['completed'] = json_decode($user['completed'], true) ?: [];
+            $user['cnt'] = count($user['completed']);
             $users[] = $user;
         }
+
+        usort($users, function($a, $b) { // cnt desc, mid asc
+            if ($a['cnt'] != $b['cnt'])
+                return $b['cnt'] - $a['cnt'];
+            return ($a['mid'] < $b['mid']) ? -1 : ($a['mid'] > $b['mid']);
+        });
 
         return view('scoreboard', compact('users', 'problems'));
     }
