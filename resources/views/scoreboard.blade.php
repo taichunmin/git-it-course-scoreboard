@@ -11,6 +11,8 @@
 	<!-- Optional theme -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
 
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
 	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 	<!--[if lt IE 9]>
@@ -20,9 +22,9 @@
 </head>
 <body>
 	<div class="container">
-		<h1>git-it scoreboard</h1>
+		<h1 class="text-center">git-it scoreboard</h1>
 		<div class="table-responsive">
-			<table class="table table-striped table-hover table-condensed">
+			<table class="table table-striped table-hover table-condensed text-center">
 				<thead>
 					<tr>
 						<th>name</th>
@@ -33,6 +35,22 @@
 @endfor
 					</tr>
 				</thead>
+				<tbody>
+@forelse( $users as $user )
+					<tr>
+						<td>{{ $user['name'] }}</td>
+						<td>{{ $user['github'] }}</td>
+						<td>{{ count($user['completed']) }}</td>
+	@for ($i = 1; $i <= 11; $i++)
+						<td>{!! in_array($problems[$i-1], $user['completed']) ? '<i class="fa fa-check-circle-o"></i>' : ' ' !!}</td>
+	@endfor
+					</tr>
+@empty
+					<tr>
+						<td colspan="14">no data</td>
+					</tr>
+@endforelse
+				</tbody>
 			</table>
 		</div>
 	</div>

@@ -26,8 +26,11 @@ class ScoreboardController extends Controller
         ];
 
         $users = [];
-        foreach($user_mids as $mid)
-            $users[] = Redis::hgetall('user:'.$mid);
+        foreach($user_mids as $mid) {
+            $user = Redis::hgetall('user:'.$mid);
+            $user['completed'] = json_decode($user['completed'], true) ?: [];
+            $users[] = $user;
+        }
 
         return view('scoreboard', compact('users', 'problems'));
     }
