@@ -24,14 +24,14 @@
 	<div class="container">
 		<h1 class="text-center">git-it scoreboard</h1>
 		<div class="table-responsive">
-			<table class="table table-striped table-hover table-condensed text-center">
+			<table class="table table-striped table-hover table-condensed table-bordered text-center">
 				<thead>
 					<tr>
-						<th>name</th>
-						<th>github</th>
-						<th>completed</th>
+						<th class="text-center">name</th>
+						<th class="text-center">github</th>
+						<th class="text-center">completed</th>
 @for ($i = 1; $i <= 11; $i++)
-						<th title="{{ $problems[$i-1] }}">{{ $i }}</th>
+						<th class="text-center" title="{{ $problems[$i-1] }}">{{ $i }}</th>
 @endfor
 					</tr>
 				</thead>
@@ -42,7 +42,11 @@
 						<td>{{ $user['github'] }}</td>
 						<td>{{ count($user['completed']) }}</td>
 	@for ($i = 1; $i <= 11; $i++)
-						<td>{!! in_array($problems[$i-1], $user['completed']) ? '<i class="fa fa-check-circle-o"></i>' : ' ' !!}</td>
+		@if (in_array($problems[$i-1], $user['completed']))
+						<td class="success"><i class="fa fa-check-circle-o"></i></td>
+		@else
+						<td>&nbsp;</td>
+		@endif
 	@endfor
 					</tr>
 @empty
