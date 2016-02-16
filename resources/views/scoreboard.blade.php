@@ -27,6 +27,7 @@
 			<table class="table table-striped table-hover table-condensed table-bordered text-center">
 				<thead>
 					<tr>
+						<th class="text-center"><i class="fa fa-male" style="visibility: hidden;"></i></th>
 						<th class="text-center">name</th>
 						<th class="text-center">github</th>
 						<th class="text-center">ssh</th>
@@ -39,6 +40,7 @@
 				<tbody>
 @forelse( $users as $user )
 					<tr>
+						<td>{!! empty($user['owned']) ? '' : '<i class="fa fa-male"></i>' !!}</td>
 						<td title="{{ $user['mid'] }}">{{ $user['name'] }}</td>
 	@if (!empty( $user['github'] ))
 						<td><a target="_blank" href="https://github.com/{{ $user['github'] }}">{{ $user['github'] }}</a></td>
@@ -57,7 +59,7 @@
 					</tr>
 @empty
 					<tr>
-						<td colspan="15">no data</td>
+						<td colspan="16">no data</td>
 					</tr>
 @endforelse
 				</tbody>

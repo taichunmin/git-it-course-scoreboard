@@ -56,6 +56,7 @@ class ScoreboardController extends Controller
                 'mid' => $mid,
                 'name' => $request->input('name', $mid), // name
                 'github' => $request->input('github', ''), // github username
+                'owned' => $request->input('owned', '0'), // owned
                 'completed' => json_encode($completed),
             ]);
             $pipe->sadd('user_mids', $mid);
