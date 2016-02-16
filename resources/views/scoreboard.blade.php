@@ -45,7 +45,7 @@
 	@else
 						<td>&nbsp;</td>
 	@endif
-						<td>{{ $user['port'] || ' ' }}</td>
+						<td>{{ $user['port'] or ' ' }}</td>
 						<td>{{ count($user['completed']) }}</td>
 	@for ($i = 1; $i <= 11; $i++)
 		@if (in_array($problems[$i-1], $user['completed']))
