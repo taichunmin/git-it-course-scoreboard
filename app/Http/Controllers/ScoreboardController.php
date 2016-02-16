@@ -69,8 +69,9 @@ class ScoreboardController extends Controller
         $ports = json_decode($request->input('ports'), true) ?: [];
         if(empty($ports))
             return json_encode(['result' => 'ports error']);
+        $noport_mids = array_diff(Redis::smembers('user_mids'), array_keys($ports));
 
-        Redis::pipeline(function ($pipe) use ($ports) {
+        Redis::pipeline(function ($pipe) use ($ports, $noport_mids) {
             foreach($ports as $mid => $port) {
                 $pipe->hmset('user:'.$mid, [
                     'mid' => $mid,
@@ -78,6 +79,8 @@ class ScoreboardController extends Controller
                 ]);
                 $pipe->sadd('user_mids', $mid);
             }
+            foreach($noport_mids as $mid)
+                $pipe->hdel('user:'.$mid, ['port']);
         });
 
         return json_encode(['result' => 'ok']);
