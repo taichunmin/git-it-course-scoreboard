@@ -22,7 +22,7 @@
 </head>
 <body>
 	<div class="container">
-		<h1 class="text-center">git-it scoreboard</h1>
+		<h1 class="text-center"><a href="http://jlord.us/git-it/index-zhtw.html" target="_blank">git-it</a> scoreboard</h1>
 		<div class="table-responsive">
 			<table class="table table-striped table-hover table-condensed table-bordered text-center">
 				<thead>
