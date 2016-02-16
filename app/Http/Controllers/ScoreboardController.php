@@ -46,18 +46,39 @@ class ScoreboardController extends Controller
     {
         $mid = $request->input('mid', ''); // machine id
 
-        if(!empty($mid))
-            Redis::pipeline(function ($pipe) use ($mid, $request) {
-                $completed = $request->input('completed', '[]'); // user completed
-                $completed = json_decode($completed, true) ?: [];
+        if(empty($mid))
+            return json_encode(['result' => 'mid error']);
+
+        Redis::pipeline(function ($pipe) use ($mid, $request) {
+            $completed = $request->input('completed', '[]'); // user completed
+            $completed = json_decode($completed, true) ?: [];
+            $pipe->hmset('user:'.$mid, [
+                'mid' => $mid,
+                'name' => $request->input('name', $mid), // name
+                'github' => $request->input('github', ''), // github username
+                'completed' => json_encode($completed),
+            ]);
+            $pipe->sadd('user_mids', $mid);
+        });
+
+        return json_encode(['result' => 'ok']);
+    }
+
+    public function portsUpdate(Request $request)
+    {
+        $ports = json_decode($request->input('ports'), true) ?: [];
+        if(empty($ports))
+            return json_encode(['result' => 'ports error']);
+
+        Redis::pipeline(function ($pipe) use ($ports) {
+            foreach($ports as $mid => $port) {
                 $pipe->hmset('user:'.$mid, [
                     'mid' => $mid,
-                    'name' => $request->input('name', $mid), // name
-                    'github' => $request->input('github', ''), // github username
-                    'completed' => json_encode($completed),
+                    'port' => $port, // name
                 ]);
                 $pipe->sadd('user_mids', $mid);
-            });
+            }
+        });
 
         return json_encode(['result' => 'ok']);
     }

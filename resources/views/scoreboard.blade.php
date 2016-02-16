@@ -29,6 +29,7 @@
 					<tr>
 						<th class="text-center">name</th>
 						<th class="text-center">github</th>
+						<th class="text-center">ssh</th>
 						<th class="text-center">completed</th>
 @for ($i = 1; $i <= 11; $i++)
 						<th class="text-center" style="width:1%" title="{{ $problems[$i-1] }}">{{ $i }}</th>
@@ -44,6 +45,7 @@
 	@else
 						<td>&nbsp;</td>
 	@endif
+						<td>{{ $user['port'] || ' ' }}</td>
 						<td>{{ count($user['completed']) }}</td>
 	@for ($i = 1; $i <= 11; $i++)
 		@if (in_array($problems[$i-1], $user['completed']))
@@ -55,7 +57,7 @@
 					</tr>
 @empty
 					<tr>
-						<td colspan="14">no data</td>
+						<td colspan="15">no data</td>
 					</tr>
 @endforelse
 				</tbody>

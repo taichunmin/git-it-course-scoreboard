@@ -14,6 +14,7 @@
 Route::get('/', 'ScoreboardController@show');
 
 Route::post('completed/update', 'ScoreboardController@completedUpdate');
+Route::post('ports/update', 'ScoreboardController@portsUpdate');
 
 /*
 |--------------------------------------------------------------------------
