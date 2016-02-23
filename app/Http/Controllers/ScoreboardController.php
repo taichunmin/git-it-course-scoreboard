@@ -28,7 +28,7 @@ class ScoreboardController extends Controller
         $users = [];
         foreach($user_mids as $mid) {
             $user = Redis::hgetall('user:'.$mid);
-            $user['completed'] = json_decode($user['completed'], true) ?: [];
+            $user['completed'] = empty($user['completed']) ? [] : json_decode($user['completed'], true);
             $user['cnt'] = count($user['completed']);
             $users[] = $user;
         }
