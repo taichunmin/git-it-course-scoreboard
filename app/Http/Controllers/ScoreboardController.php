@@ -29,13 +29,16 @@ class ScoreboardController extends Controller
         foreach($user_mids as $mid) {
             $user = Redis::hgetall('user:'.$mid);
             $user['completed'] = empty($user['completed']) ? [] : json_decode($user['completed'], true);
+            $user['port'] = empty($user['port']) ? '' : $user['port'];
             $user['cnt'] = count($user['completed']);
             $users[] = $user;
         }
 
-        usort($users, function($a, $b) { // cnt desc, mid asc
+        usort($users, function($a, $b) { // cnt desc, port asc, mid asc
             if ($a['cnt'] != $b['cnt'])
                 return $b['cnt'] - $a['cnt'];
+            if ($a['port'] != $b['port'])
+                return ($a['port'] < $b['port']) ? -1 : ($a['port'] > $b['port']);
             return ($a['mid'] < $b['mid']) ? -1 : ($a['mid'] > $b['mid']);
         });
 
