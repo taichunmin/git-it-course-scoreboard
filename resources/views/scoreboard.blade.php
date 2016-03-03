@@ -41,7 +41,7 @@
 @forelse( $users as $user )
 					<tr>
 						<td>{!! empty($user['owned']) ? '' : '<i class="fa fa-male"></i>' !!}</td>
-						<td title="{{ $user['mid'] }}">{{ $user['name'] }}</td>
+						<td title="{{ $user['mid'] }}">{{ $user['name'] or $user['mid'] }}</td>
 	@if (!empty( $user['github'] ))
 						<td><a target="_blank" href="https://github.com/{{ $user['github'] }}">{{ $user['github'] }}</a></td>
 	@else
