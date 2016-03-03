@@ -63,7 +63,7 @@ class DockerCloudPortsUpdate extends Command
         foreach($stacks['objects'] as $stack)
             foreach($stack['services'] as $serviceURI) {
                 $service = $this->dockercloud_curl($serviceURI);
-                if($service['name'] !== 'client')
+                if(!preg_match('/^client/us', $service['name']))
                     continue;
                 foreach($service['containers'] as $containerURI)
                     $containers[] = $containerURI;
