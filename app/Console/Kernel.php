@@ -15,6 +15,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         // Commands\Inspire::class,
         Commands\DockerCloudPortsUpdate::class,
+        Commands\DockerRemotePortsUpdate::class,
     ];
 
     /**
@@ -26,5 +27,6 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('dc:portsupdate')->cron('*/3 * * * *')->withoutOverlapping();
+        $schedule->command('dr:portsupdate')->cron('*/3 * * * *')->withoutOverlapping();
     }
 }
