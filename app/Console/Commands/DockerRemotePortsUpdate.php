@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Redis;
+use Exception;
 
 class DockerRemotePortsUpdate extends Command
 {
@@ -54,7 +55,7 @@ class DockerRemotePortsUpdate extends Command
         $cfg = &$this->cfg;
 
         // 取得 container 資料
-        $containers = $this->dockerremote_curl('/containers/json', ['filters'=>'{"label":["role=git-it-client"]}']);
+        $containers = $this->dockerremote_sock('/containers/json', ['filters'=>'{"label":["role=git-it-client"]}']);
         // var_export($stacks);
 
         $ports = [];
@@ -84,10 +85,10 @@ class DockerRemotePortsUpdate extends Command
     private function check_cfg()
     {
         $cfg = &$this->cfg;
-        if(empty($cfg['ip']) || empty($cfg['port'])) {
-            $this->error('Docker cfg error: '.json_encode($cfg));
-            return false;
-        }
+        // if(empty($cfg['ip']) || empty($cfg['port'])) {
+        //     $this->error('Docker cfg error: '.json_encode($cfg));
+        //     return false;
+        // }
         return true;
     }
 
@@ -107,5 +108,49 @@ class DockerRemotePortsUpdate extends Command
         if(false === $html)
             throw new Exception("Faild -> $url ".curl_error($ch));
         return json_decode($html, true) ?: $html;
+    }
+
+    private function dockerremote_sock($path, $get = [])
+    {
+        $url = '/' . ltrim($path, '/') . '?' . http_build_query($get);
+        $sock = stream_socket_client('unix:///var/run/docker.sock', $errno, $errstr);
+        if(false === $sock)
+            throw new Exception("socket error: ($errno) $errstr");
+        $request = <<<STR
+GET $url HTTP/1.1
+Connection: close
+
+
+STR;
+        fwrite($sock, $request);
+        $response = '';
+        while( !feof($sock) ) {
+            $tmp = fread($sock, 65535);
+            echo "read ".strlen($tmp)." bytes.".PHP_EOL;
+            $response .= $tmp;
+        }
+        fclose($sock);
+        $json = json_decode($this->parse_response($response), true);
+        if(!is_array($json))
+            throw new Exception($response);
+        return $json;
+    }
+
+    private function parse_response($str = '')
+    {
+        if( preg_match('/Transfer-Encoding: chunked/us', $str) ) {
+            preg_match('/(HTTP[^\r\n]*\r?\n|[^\r\n]*:[^\r\n]*\r?\n)+(.*)/us', $str, $match);
+            $str = $match[2];
+            for ($res = ''; !empty($str); $str = trim($str)) {
+                $pos = strpos($str, "\r\n");
+                $len = hexdec(substr($str, 0, $pos));
+                $res.= substr($str, $pos + 2, $len);
+                $str = substr($str, $pos + 2 + $len);
+            }
+            return $res;
+        } else {
+            $data = explode("\r\n\r\n", $str, 2);
+            return $data[1];
+        }
     }
 }
