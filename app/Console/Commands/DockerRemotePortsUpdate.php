@@ -118,6 +118,7 @@ class DockerRemotePortsUpdate extends Command
             throw new Exception("socket error: ($errno) $errstr");
         $request = <<<STR
 GET $url HTTP/1.1
+Host: localhost
 Connection: close
 
 
